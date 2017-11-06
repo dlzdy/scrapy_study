@@ -2,6 +2,7 @@
 import scrapy
 from scrapy_study.items import HuxiuItem
 
+
 class HuxiuSpider(scrapy.Spider):
     name = 'huxiu'
     allowed_domains = ['huxiu.com']

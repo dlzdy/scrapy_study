@@ -1,3 +1,5 @@
 # -*- coding=utf8 -*-
 from scrapy import cmdline
-cmdline.execute("scrapy crawl github".split())
+#cmdline.execute("scrapy crawl pospal".split())
+#用户名或密码错误
+print(b"\xe7\x94\xa8\xe6\x88\xb7\xe5\x90\x8d\xe6\x88\x96\xe5\xaf\x86\xe7\xa0\x81\xe9\x94\x99\xe8\xaf\xaf".decode())
