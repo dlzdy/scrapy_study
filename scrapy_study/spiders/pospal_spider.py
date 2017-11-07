@@ -3,17 +3,16 @@ import scrapy
 import logging
 from scrapy import Request
 import json
-
+import math
 class PosPalSpider(scrapy.Spider):
     name = 'pospal'
-    url = 'https://user.pospal.cn/account/signin'
-    createUserId = 2968559
+    createUserId = '2968559'
     userName = '13810807631'
     password = '888008'
     url_prefix = 'http://beta7.pospal.cn/Home'
+
     def start_requests(self):
         return [Request(url='https://user.pospal.cn/account/signin', callback=self.post_login)]
-
 
     # action=https://user.pospal.cn/account/signin
     # userName= 13810807631
@@ -23,16 +22,17 @@ class PosPalSpider(scrapy.Spider):
             'userName': self.userName,
             'password': self.password
         }
-        print(formdata)
-        return scrapy.FormRequest(url='https://user.pospal.cn/account/signin',
+        return [scrapy.FormRequest(url='https://user.pospal.cn/account/signin',
                                   formdata=formdata,
                                   method='POST',
-                                  callback=self.after_login)
+                                  callback=self.after_login)]
+
+
 
     # {"successed":true,"msg":"http://beta7.pospal.cn/Home"}
     def after_login(self, response):
         jsonData = json.loads(response.body)
-        logging.debug(response.body)
+        print(response.body)
         # 判断successed=true, 则继续执行，否则发送错误邮件给 xlpc_bj@163.com
         if jsonData['successed'] is False:
             # TODO 发错误邮件通知
@@ -40,27 +40,30 @@ class PosPalSpider(scrapy.Spider):
             return
 
         # 1.导入用户数据
-        self.import_customers()
+        # self.import_customers(response)
         # 2.导入销售单据
-        #self.import_customers()
+        yield  self.import_customers(response)
         #print(response.body)
         pass
 
     # 导入用户数据
-    def import_customers(self):
+    def import_customers(self, response):
+        print('debug')
+        #TypeError: to_bytes must receive a unicode, str or bytes object, got int
+        #Fixed 1-->'1'
         formdata = {
             'createUserId': self.createUserId,
             'categoryUid': '',
             'tagUid': '',
-            'type': 1,
+            'type': '1',
             'keyword': ''
         }
         print(formdata)
-        logging.debug('import_customers formdata:' + formdata)
-        return scrapy.FormRequest('http://beta7.pospal.cn/Customer/LoadCustomerSummary',
-                              formdata=formdata,
-                              method='POST',
-                              callback=self.parse_customer_summary)
+        #logging.debug('import_customers formdata:' + formdata)
+        return scrapy.FormRequest(url='http://beta7.pospal.cn/Customer/LoadCustomerSummary',
+                                formdata=formdata,
+                                method='POST',
+                                callback=self.parse_customer_summary)
 
     # 解析会员汇总信息，总数量
     def parse_customer_summary(self, response):
@@ -75,13 +78,10 @@ class PosPalSpider(scrapy.Spider):
         # 每页50
         page_size = 50
         # 计算总页数
-        if total_record % page_size == 0 :
-            page_total = total_record / page_size
-        else:
-            page_total =  total_record / page_size + 1
+        page_total = math.ceil(total_record/page_size) #向上取整
 
         for page_index in range(1, page_total):
-            self.post_load_customers_by_page(page_index, page_size)
+           yield self.post_load_customers_by_page(page_index, page_size)
 
     # 提交会员页面
     def post_load_customers_by_page(self, page_index=1, page_size=50):
@@ -89,14 +89,14 @@ class PosPalSpider(scrapy.Spider):
             'createUserId': self.createUserId,
             'categoryUid': '',
             'tagUid': '',
-            'type': 1,
+            'type': str(1),
             'keyword': '',
-            'pageIndex': page_index,
-            'pageSize': page_size,
+            'pageIndex': str(page_index),
+            'pageSize': str(page_size),
             'orderColumn': '',
-            'asc': False
+            'asc': 'false'
         }
-        yield scrapy.FormRequest('http://beta7.pospal.cn/Customer/LoadCustomersByPage',
+        return scrapy.FormRequest(url='http://beta7.pospal.cn/Customer/LoadCustomersByPage',
                              formdata=formdata,
                              method='POST',
                              callback=self.parse_load_customer_by_page)
