@@ -9,16 +9,16 @@ from lxml import etree
 class PosPalSpider(scrapy.Spider):
     name = 'pospal'
     createUserId = '2968559'
-    userName = '13810807631'
-    password = '888008'
+    userName = '1381080X6XX'
+    password = 'XXX008'
     url_prefix = 'http://beta7.pospal.cn/Home'
 
     def start_requests(self):
         return [Request(url='https://user.pospal.cn/account/signin', callback=self.post_login)]
 
     # action=https://user.pospal.cn/account/signin
-    # userName= 13810807631
-    # password= 888008
+    # userName=
+    # password=
     def post_login(self, response):
         formdata = {
             'userName': self.userName,

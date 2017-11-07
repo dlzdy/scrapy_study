@@ -14,8 +14,8 @@ class PosPal2Spider(scrapy.Spider):
 
 
     # action=https://user.pospal.cn/account/signin
-    # userName= 13810807631
-    # password= 888008
+    # userName=
+    # password=
     def post_login(self, response):
         print('debug')
         formdata = {
