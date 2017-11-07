@@ -4,6 +4,8 @@ import logging
 from scrapy import Request
 import json
 import math
+from lxml import etree
+
 class PosPalSpider(scrapy.Spider):
     name = 'pospal'
     createUserId = '2968559'
@@ -110,9 +112,9 @@ class PosPalSpider(scrapy.Spider):
             logging.error('parse_customer_summary failed')
             return
         content = jsonData['contentView']
+        html = etree.HTML(content)
+        print(html.xpath('/tbody/tr[1]/td[3]/text()')[0].extract()[0])
 
 
-
-        
 
     #http://beta7.pospal.cn/Report/LoadTicketsByPage  销售单据

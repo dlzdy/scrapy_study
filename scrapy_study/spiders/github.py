@@ -3,7 +3,6 @@ import scrapy
 import logging
 from scrapy import Request
 
-
 class GithubSpider(scrapy.Spider):
     name = 'github'
     start_urls = ["https://www.github.com/index.php"]
