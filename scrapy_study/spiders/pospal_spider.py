@@ -9,8 +9,8 @@ from lxml import etree
 class PosPalSpider(scrapy.Spider):
     name = 'pospal'
     createUserId = '2968559'
-    userName = '1381080X6XX'
-    password = 'XXX008'
+    userName = ''
+    password = '888008'
     url_prefix = 'http://beta7.pospal.cn/Home'
 
     def start_requests(self):
@@ -113,7 +113,11 @@ class PosPalSpider(scrapy.Spider):
             return
         content = jsonData['contentView']
         html = etree.HTML(content)
-        print(html.xpath('/tbody/tr[1]/td[3]/text()')[0].extract()[0])
+        trs = html.xpath('//tbody/tr')  # tbody/trs
+        for tr in trs:
+            print(tr.xpath('td[3]/text()')[0])  #
+            print(tr.xpath('td[4]/text()')[0])  # 姓名
+            print(tr.xpath('td[5]/text()')[0])  # 手机
 
 
 
