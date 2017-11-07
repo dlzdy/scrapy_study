@@ -103,5 +103,16 @@ class PosPalSpider(scrapy.Spider):
 
     # 解析会员详细信息
     def parse_load_customer_by_page(self, response):
-        print(response.body)
+        jsonData = json.loads(response.body)
+        # 判断successed=true, 则继续执行，否则发送错误邮件给 xlpc_bj@163.com
+        if jsonData['successed'] is False:
+            # TODO 发错误邮件通知
+            logging.error('parse_customer_summary failed')
+            return
+        content = jsonData['contentView']
+
+
+
+        
+
     #http://beta7.pospal.cn/Report/LoadTicketsByPage  销售单据
