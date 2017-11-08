@@ -7,8 +7,7 @@ from scrapy_study.items import PospalCustomerItem
 
 class PosPalOffLineSpider(scrapy.Spider):
     name = 'pospal_offline'
-    allowed_domains = ['baidu.com']
-    start_urls = ["http://www.pospal.cn"]
+    start_urls = ["http://www.baidu.com"]
 
     def parse(self, response):
         item = PospalCustomerItem()
