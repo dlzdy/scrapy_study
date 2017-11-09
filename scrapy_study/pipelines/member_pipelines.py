@@ -10,7 +10,7 @@ from scrapy.exceptions import DropItem
 import pymysql
 from DBUtils.PooledDB import PooledDB
 import contextlib
-
+from dbmanager import  DBManager
 
 # 定义上下文管理器，连接后自动关闭连接
 @contextlib.contextmanager

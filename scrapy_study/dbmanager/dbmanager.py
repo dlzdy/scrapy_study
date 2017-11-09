@@ -4,9 +4,9 @@
 """
 import pymysql
 from DBUtils.PooledDB import PooledDB
-#自定义的配置文件，主要包含DB的一些基本配置
 
-#数据库实例化类
+
+# 数据库实例化类
 class DbManager():
 
     def __init__(self):
@@ -35,8 +35,8 @@ def executeAndGetId(sql, param=None):
     id = cursor.lastrowid
     cursor.close()
     conn.close()
-
     return id
+
 
 def execute(sql, param=None):
     """ 执行sql语句 """
@@ -50,6 +50,7 @@ def execute(sql, param=None):
     conn.close()
 
     return rowcount
+
 
 def queryOne(sql):
     """ 获取一条信息 """
@@ -65,6 +66,7 @@ def queryOne(sql):
 
     return res
 
+
 def queryAll(sql):
     """ 获取所有信息 """
     conn = getConn()
@@ -78,6 +80,7 @@ def queryAll(sql):
     conn.close()
 
     return res
+
 
 if __name__ == "__main__":
     res = execute('select count(*) from pospal_member')
