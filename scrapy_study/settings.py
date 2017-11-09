@@ -74,8 +74,9 @@ DEFAULT_REQUEST_HEADERS = {
 #ITEM_PIPELINES = {
 #    'scrapy_study.pipelines.ScrapyStudyPipeline': 300,
 #}
+#'scrapy_study.pipelines.pospal_member_pipelines.DuplicatesPipeline': 100,   #保存到mysql数据库
 ITEM_PIPELINES = {
-    'scrapy_study.pipelines.ScrapyStudyPipeline': 300,#保存到mysql数据库
+    'scrapy_study.pipelines.member_pipelines.SavePipeline': 300,  # 保存到mysql数据库
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

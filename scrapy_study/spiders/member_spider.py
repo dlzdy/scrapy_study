@@ -5,14 +5,16 @@ from scrapy import Request
 import json
 import math
 from lxml import etree
-
+from scrapy.mail import MailSender
+from scrapy_study.items import PospalCustomerItem
+from datetime import datetime
 class PosPalSpider(scrapy.Spider):
-    name = 'pospal'
+    name = 'member'
     createUserId = '2968559'
-    userName = ''
+    userName = '13810807631'
     password = '888008'
     url_prefix = 'http://beta7.pospal.cn/Home'
-
+    # mailer = MailSender.from_settings(settings)
     def start_requests(self):
         return [Request(url='https://user.pospal.cn/account/signin', callback=self.post_login)]
 
@@ -81,8 +83,8 @@ class PosPalSpider(scrapy.Spider):
         page_size = 50
         # 计算总页数
         page_total = math.ceil(total_record/page_size) #向上取整
-
-        for page_index in range(1, page_total):
+        #range(1, 5), 1,2,3,4
+        for page_index in range(1, page_total+1):
            yield self.post_load_customers_by_page(page_index, page_size)
 
     # 提交会员页面
@@ -114,10 +116,18 @@ class PosPalSpider(scrapy.Spider):
         content = jsonData['contentView']
         html = etree.HTML(content)
         trs = html.xpath('//tbody/tr')  # tbody/trs
+        cur_datetime = datetime.strftime('%Y-%m-%d %H:%M:%S')
         for tr in trs:
-            print(tr.xpath('td[3]/text()')[0])  #
-            print(tr.xpath('td[4]/text()')[0])  # 姓名
-            print(tr.xpath('td[5]/text()')[0])  # 手机
+            item = PospalCustomerItem()
+            item['member_number'] = tr.xpath('td[3]/text()')[0]
+            item['real_name'] = tr.xpath('td[4]/text()')[0]
+            item['mobile'] = tr.xpath('td[5]/text()')[0]
+            item['member_point'] = tr.xpath('td[8]/text()')[0]
+            item['is_enabled'] = '1'
+            item['is_dealed'] = '0'
+            item['create_time'] = cur_datetime
+            item['modify_time'] = cur_datetime
+            yield item
 
 
 
